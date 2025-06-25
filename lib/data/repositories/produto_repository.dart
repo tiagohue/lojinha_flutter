@@ -19,12 +19,12 @@ class ProdutoRepository implements IProdutoRepository {
 
   ProdutoRepository({required this.client});
 
-  final baseUrl =
+  final baseApiUrl =
       "https://685bfd3189952852c2dbc8fe.mockapi.io/lojinha/api/products";
 
   @override
   Future<List<ProdutoModel>> getProdutos() async {
-    final response = await client.get(url: baseUrl);
+    final response = await client.get(url: baseApiUrl);
 
     if (response.statusCode == 200) {
       final List<ProdutoModel> produtos = [];
@@ -48,7 +48,7 @@ class ProdutoRepository implements IProdutoRepository {
   @override
   Future<void> criarProduto(ProdutoModel produtoModel) async {
     final response = await client.post(
-      url: baseUrl,
+      url: baseApiUrl,
       body: json.encode(produtoModel.toMap()),
     );
 
@@ -64,8 +64,11 @@ class ProdutoRepository implements IProdutoRepository {
   }
 
   @override
-  Future<void> deletarProduto(String id) {
-    // TODO: implement deletarProduto
-    throw UnimplementedError();
+  Future<void> deletarProduto(String? id) async {
+    if (id != null) {
+      await client.delete(url: baseApiUrl, id: id);
+    } else {
+      throw Exception("Id não pode ser nulo...");
+    }
   }
 }

@@ -30,12 +30,31 @@ class _HomePageState extends State<HomePage> {
                 itemCount: provider.produtos.length,
                 itemBuilder: (context, index) {
                   final produto = provider.produtos[index];
+
                   return ListTile(
                     title: Text(produto.title),
                     subtitle: Text(produto.price.toString()),
                     trailing: IconButton(
                       onPressed: () {
-                        debugPrint("deletar");
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: Text("Tem certeza?"),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text("Não"),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  provider.deletarProduto(produto.id);
+                                  Navigator.pop(context);
+                                },
+                                child: Text("Sim"),
+                              ),
+                            ],
+                          ),
+                        );
                       },
                       icon: Icon(Icons.close),
                     ),

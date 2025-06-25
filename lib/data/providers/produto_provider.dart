@@ -46,5 +46,9 @@ class ProdutoProvider extends ChangeNotifier {
 
   Future<void> atualizarProduto() async {}
 
-  Future<void> deletarProduto(int id) async {}
+  Future<void> deletarProduto(String? id) async {
+    await repo.deletarProduto(id);
+    await carregarProdutos();
+    notifyListeners();
+  }
 }
