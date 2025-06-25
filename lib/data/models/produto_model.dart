@@ -4,6 +4,7 @@ class ProdutoModel {
   final double price;
   final String category;
   final String description;
+  final String image;
 
   ProdutoModel({
     this.id,
@@ -11,6 +12,7 @@ class ProdutoModel {
     required this.price,
     required this.category,
     required this.description,
+    required this.image,
   });
 
   factory ProdutoModel.fromMap(Map<String, dynamic> map) {
@@ -20,6 +22,7 @@ class ProdutoModel {
       price: map["price"] * 1.0,
       category: map["category"],
       description: map["description"],
+      image: map["image"],
     );
   }
 
@@ -30,6 +33,7 @@ class ProdutoModel {
       "price": price,
       "description": description,
       "category": category,
+      "image": image,
     };
   }
 }
