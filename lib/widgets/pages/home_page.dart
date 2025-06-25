@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lojinha_flutter/data/providers/produto_provider.dart';
 import 'package:lojinha_flutter/widgets/pages/create_page.dart';
+import 'package:lojinha_flutter/widgets/pages/details_page.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -34,12 +35,23 @@ class _HomePageState extends State<HomePage> {
                   return ListTile(
                     title: Text(produto.title),
                     subtitle: Text(produto.price.toString()),
+                    onTap: () {
+                      provider.produtoSelec = produto;
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => DetailsPage()),
+                      );
+                    },
                     trailing: IconButton(
                       onPressed: () {
                         showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
                             title: Text("Tem certeza?"),
+                            content: Text(
+                              "Tem certeza que quer deletar o produto \"${produto.title}\"",
+                            ),
                             actions: [
                               ElevatedButton(
                                 onPressed: () => Navigator.pop(context),
