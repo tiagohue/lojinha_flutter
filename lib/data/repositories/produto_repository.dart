@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:lojinha_flutter/data/http/exceptions.dart';
 import 'package:lojinha_flutter/data/http/http_client.dart';
 import 'package:lojinha_flutter/data/models/produto_model.dart';
 
@@ -9,7 +6,7 @@ abstract class IProdutoRepository {
 
   Future<void> criarProduto(ProdutoModel produtoModel);
 
-  Future<void> atualizarProduto(ProdutoModel produtoModel);
+  Future<void> atualizarProduto(ProdutoModel produto);
 
   Future<void> deletarProduto(String id);
 }
@@ -24,43 +21,26 @@ class ProdutoRepository implements IProdutoRepository {
 
   @override
   Future<List<ProdutoModel>> getProdutos() async {
-    final response = await client.get(url: baseApiUrl);
+    final List<ProdutoModel> produtos = [];
 
-    if (response.statusCode == 200) {
-      final List<ProdutoModel> produtos = [];
+    final body = await client.get(url: baseApiUrl);
+    body.map((item) {
+      final ProdutoModel produto = ProdutoModel.fromMap(item);
 
-      final body = jsonDecode(response.body);
+      produtos.add(produto);
+    }).toList();
 
-      body.map((item) {
-        final ProdutoModel produto = ProdutoModel.fromMap(item);
-
-        produtos.add(produto);
-      }).toList();
-
-      return produtos;
-    } else if (response.statusCode == 404) {
-      throw NotFoundException("A url informada não é válida...");
-    } else {
-      throw Exception("Não foi possível carregar os produtos...");
-    }
+    return produtos;
   }
 
   @override
   Future<void> criarProduto(ProdutoModel produtoModel) async {
-    final response = await client.post(
-      url: baseApiUrl,
-      body: json.encode(produtoModel.toMap()),
-    );
-
-    if (response.statusCode != 201 && response.statusCode != 200) {
-      throw Exception("Erro ao criar produto...");
-    }
+    await client.post(url: baseApiUrl, body: produtoModel.toMap());
   }
 
   @override
-  Future<void> atualizarProduto(ProdutoModel produtoModel) {
-    // TODO: implement atualizarProduto
-    throw UnimplementedError();
+  Future<void> atualizarProduto(ProdutoModel produto) async {
+    client.put(url: baseApiUrl, body: produto.toMap());
   }
 
   @override

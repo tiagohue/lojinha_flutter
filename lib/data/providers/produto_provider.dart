@@ -8,6 +8,7 @@ class ProdutoProvider extends ChangeNotifier {
   List<ProdutoModel> produtos = [];
   bool carregando = false;
   String? erro;
+  ProdutoModel? produtoSelec;
 
   ProdutoProvider({required this.repo});
 
@@ -26,25 +27,17 @@ class ProdutoProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> criarProduto(
-    String title,
-    double price,
-    String category,
-    String description,
-  ) async {
-    await repo.criarProduto(
-      ProdutoModel(
-        title: title,
-        price: price,
-        category: category,
-        description: description,
-      ),
-    );
+  Future<void> criarProduto(ProdutoModel produto) async {
+    await repo.criarProduto(produto);
     await carregarProdutos();
     notifyListeners();
   }
 
-  Future<void> atualizarProduto() async {}
+  Future<void> atualizarProduto(ProdutoModel produto) async {
+    await repo.atualizarProduto(produto);
+    await carregarProdutos();
+    notifyListeners();
+  }
 
   Future<void> deletarProduto(String? id) async {
     await repo.deletarProduto(id);
