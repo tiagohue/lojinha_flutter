@@ -29,6 +29,12 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+          textTheme: TextTheme(
+            titleLarge: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         home: HomePage(),
       ),
