@@ -25,4 +25,26 @@ class ProdutoProvider extends ChangeNotifier {
     carregando = false;
     notifyListeners();
   }
+
+  Future<void> criarProduto(
+    String title,
+    double price,
+    String category,
+    String description,
+  ) async {
+    await repo.criarProduto(
+      ProdutoModel(
+        title: title,
+        price: price,
+        category: category,
+        description: description,
+      ),
+    );
+    await carregarProdutos();
+    notifyListeners();
+  }
+
+  Future<void> atualizarProduto() async {}
+
+  Future<void> deletarProduto(int id) async {}
 }
