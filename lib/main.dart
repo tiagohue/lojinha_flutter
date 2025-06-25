@@ -17,8 +17,13 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) =>
-              ProdutoProvider(repo: ProdutoRepository(client: HttpClient())),
+          create: (_) {
+            final provider = ProdutoProvider(
+              repo: ProdutoRepository(client: HttpClient()),
+            );
+            provider.carregarProdutos();
+            return provider;
+          },
         ),
       ],
       child: MaterialApp(
