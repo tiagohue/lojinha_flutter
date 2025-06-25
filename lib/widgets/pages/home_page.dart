@@ -32,7 +32,13 @@ class _HomePageState extends State<HomePage> {
                   final produto = provider.produtos[index];
                   return ListTile(
                     title: Text(produto.title),
-                    subtitle: Text(produto.title),
+                    subtitle: Text(produto.price.toString()),
+                    trailing: IconButton(
+                      onPressed: () {
+                        debugPrint("deletar");
+                      },
+                      icon: Icon(Icons.close),
+                    ),
                   );
                 },
               ),
@@ -42,7 +48,7 @@ class _HomePageState extends State<HomePage> {
           context,
           MaterialPageRoute(builder: (BuildContext context) => CreatePage()),
         ),
-        tooltip: 'Adicionar produto',
+        tooltip: 'Criar produto',
         child: const Icon(Icons.add),
       ),
     );
