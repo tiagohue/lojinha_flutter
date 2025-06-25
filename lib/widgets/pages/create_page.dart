@@ -15,6 +15,7 @@ class _CreatePageState extends State<CreatePage> {
   final priceController = TextEditingController();
   final categoryController = TextEditingController();
   final descriptionController = TextEditingController();
+  final imageController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,10 @@ class _CreatePageState extends State<CreatePage> {
             TextFormField(
               controller: descriptionController,
               decoration: const InputDecoration(labelText: 'Descrição'),
-              keyboardType: TextInputType.number,
+            ),
+            TextFormField(
+              controller: imageController,
+              decoration: const InputDecoration(labelText: 'Url da imagem'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -54,14 +58,14 @@ class _CreatePageState extends State<CreatePage> {
                 final price = double.tryParse(priceController.text) ?? 0.0;
                 final category = categoryController.text.trim();
                 final description = descriptionController.text.trim();
+                final image = imageController.text.trim();
 
-                if (title.isEmpty ||
-                    price <= 0 ||
-                    category.isEmpty ||
-                    description.isEmpty) {
+                if (title.isEmpty || price <= 0) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text("Preencha os campos corretamente!"),
+                      content: Text(
+                        "Preencha pelo menos os campos \"título\" e \"preço\" corretamente!",
+                      ),
                     ),
                   );
                   return;
@@ -72,6 +76,7 @@ class _CreatePageState extends State<CreatePage> {
                   price: price,
                   category: category,
                   description: description,
+                  image: image,
                 );
 
                 provider.criarProduto(produto);

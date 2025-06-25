@@ -15,16 +15,18 @@ class _DetailsPageState extends State<DetailsPage> {
   final priceController = TextEditingController();
   final categoryController = TextEditingController();
   final descriptionController = TextEditingController();
+  final imageController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ProdutoProvider>(context, listen: true);
+    final provider = Provider.of<ProdutoProvider>(context, listen: false);
     final produtoSelec = provider.produtoSelec!;
 
     titleController.text = produtoSelec.title;
     priceController.text = produtoSelec.price.toString();
     categoryController.text = produtoSelec.category;
     descriptionController.text = produtoSelec.description;
+    imageController.text = produtoSelec.image;
 
     return Scaffold(
       appBar: AppBar(
@@ -52,22 +54,25 @@ class _DetailsPageState extends State<DetailsPage> {
             TextFormField(
               controller: descriptionController,
               decoration: const InputDecoration(labelText: 'Descrição'),
-              keyboardType: TextInputType.number,
+            ),
+            TextFormField(
+              controller: imageController,
+              decoration: const InputDecoration(labelText: 'Url da imagem'),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 final title = titleController.text.trim();
                 final price = double.tryParse(priceController.text) ?? 0.0;
                 final category = categoryController.text.trim();
                 final description = descriptionController.text.trim();
+                final image = imageController.text.trim();
 
-                if (title.isEmpty ||
-                    price <= 0 ||
-                    category.isEmpty ||
-                    description.isEmpty) {
+                if (title.isEmpty || price <= 0) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text("Preencha os campos corretamente!"),
+                      content: Text(
+                        "Preencha pelo menos os campos \"título\" e \"preço\" corretamente!",
+                      ),
                     ),
                   );
                   return;
@@ -78,10 +83,13 @@ class _DetailsPageState extends State<DetailsPage> {
                   price: price,
                   category: category,
                   description: description,
+                  image: image,
                 );
 
                 produto.id = produtoSelec.id;
-                provider.atualizarProduto(produto);
+                await provider.atualizarProduto(produto);
+
+                provider.produtoSelec = produto;
 
                 Navigator.pop(context);
               },
