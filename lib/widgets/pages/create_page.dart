@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lojinha_flutter/data/models/produto_model.dart';
 import 'package:lojinha_flutter/data/providers/produto_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -49,12 +50,31 @@ class _CreatePageState extends State<CreatePage> {
             ),
             ElevatedButton(
               onPressed: () {
-                provider.criarProduto(
-                  titleController.text,
-                  double.parse(priceController.text),
-                  categoryController.text,
-                  descriptionController.text,
+                final title = titleController.text.trim();
+                final price = double.tryParse(priceController.text) ?? 0.0;
+                final category = categoryController.text.trim();
+                final description = descriptionController.text.trim();
+
+                if (title.isEmpty ||
+                    price <= 0 ||
+                    category.isEmpty ||
+                    description.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Preencha os campos corretamente!"),
+                    ),
+                  );
+                  return;
+                }
+
+                final produto = ProdutoModel(
+                  title: title,
+                  price: price,
+                  category: category,
+                  description: description,
                 );
+
+                provider.criarProduto(produto);
 
                 Navigator.pop(context);
               },
