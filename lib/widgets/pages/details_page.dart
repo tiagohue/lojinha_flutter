@@ -13,6 +13,7 @@ class DetailsPage extends StatefulWidget {
 class _DetailsPageState extends State<DetailsPage> {
   final titleController = TextEditingController();
   final priceController = TextEditingController();
+  final quantityController = TextEditingController();
   final categoryController = TextEditingController();
   final descriptionController = TextEditingController();
   final imageController = TextEditingController();
@@ -24,6 +25,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
     titleController.text = produtoSelec.title;
     priceController.text = produtoSelec.price.toString();
+    quantityController.text = produtoSelec.quantity.toString();
     categoryController.text = produtoSelec.category;
     descriptionController.text = produtoSelec.description;
     imageController.text = produtoSelec.image;
@@ -48,6 +50,11 @@ class _DetailsPageState extends State<DetailsPage> {
               keyboardType: TextInputType.number,
             ),
             TextFormField(
+              controller: quantityController,
+              decoration: const InputDecoration(labelText: 'Quantidade'),
+              keyboardType: TextInputType.number,
+            ),
+            TextFormField(
               controller: categoryController,
               decoration: const InputDecoration(labelText: 'Categoria'),
             ),
@@ -63,6 +70,7 @@ class _DetailsPageState extends State<DetailsPage> {
               onPressed: () async {
                 final title = titleController.text.trim();
                 final price = double.tryParse(priceController.text) ?? 0.0;
+                final quantity = int.tryParse(quantityController.text) ?? 0;
                 final category = categoryController.text.trim();
                 final description = descriptionController.text.trim();
                 final image = imageController.text.trim();
@@ -78,9 +86,19 @@ class _DetailsPageState extends State<DetailsPage> {
                   return;
                 }
 
+                if (quantity < 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("A quantidade não pode ser negativa!"),
+                    ),
+                  );
+                  return;
+                }
+
                 final produto = ProdutoModel(
                   title: title,
                   price: price,
+                  quantity: quantity,
                   category: category,
                   description: description,
                   image: image,

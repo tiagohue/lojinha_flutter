@@ -13,6 +13,7 @@ class CreatePage extends StatefulWidget {
 class _CreatePageState extends State<CreatePage> {
   final titleController = TextEditingController();
   final priceController = TextEditingController();
+  final quantityController = TextEditingController();
   final categoryController = TextEditingController();
   final descriptionController = TextEditingController();
   final imageController = TextEditingController();
@@ -41,6 +42,11 @@ class _CreatePageState extends State<CreatePage> {
               keyboardType: TextInputType.number,
             ),
             TextFormField(
+              controller: quantityController,
+              decoration: const InputDecoration(labelText: 'Quantidade'),
+              keyboardType: TextInputType.number,
+            ),
+            TextFormField(
               controller: categoryController,
               decoration: const InputDecoration(labelText: 'Categoria'),
             ),
@@ -56,6 +62,7 @@ class _CreatePageState extends State<CreatePage> {
               onPressed: () {
                 final title = titleController.text.trim();
                 final price = double.tryParse(priceController.text) ?? 0.0;
+                final quantity = int.tryParse(quantityController.text) ?? 0;
                 final category = categoryController.text.trim();
                 final description = descriptionController.text.trim();
                 final image = imageController.text.trim();
@@ -71,9 +78,19 @@ class _CreatePageState extends State<CreatePage> {
                   return;
                 }
 
+                if (quantity < 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("A quantidade não pode ser negativa!"),
+                    ),
+                  );
+                  return;
+                }
+
                 final produto = ProdutoModel(
                   title: title,
                   price: price,
+                  quantity: quantity,
                   category: category,
                   description: description,
                   image: image,

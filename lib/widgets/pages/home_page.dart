@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         leading: Icon(Icons.local_grocery_store),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("Lojinha - Admin"),
+        title: Text("Lojinha - Estoque"),
       ),
       body: Center(
         child: provider.carregando
@@ -51,15 +51,18 @@ class _HomePageState extends State<HomePage> {
                       child: Stack(
                         children: [
                           Positioned.fill(
-                            child: Image.network(
-                              produto.image,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, _, _) => Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(MdiIcons.emoticonSadOutline),
-                                  Text("Link bugado..."),
-                                ],
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                produto.image,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, _, _) => Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(MdiIcons.emoticonSadOutline),
+                                    Text("Link bugado..."),
+                                  ],
+                                ),
                               ),
                             ),
                           ),

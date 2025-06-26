@@ -2,6 +2,7 @@ class ProdutoModel {
   String? id;
   final String title;
   final double price;
+  final int quantity;
   final String category;
   final String description;
   final String image;
@@ -10,6 +11,7 @@ class ProdutoModel {
     this.id,
     required this.title,
     required this.price,
+    required this.quantity,
     required this.category,
     required this.description,
     required this.image,
@@ -20,6 +22,7 @@ class ProdutoModel {
       id: map["id"],
       title: map["title"],
       price: map["price"] * 1.0,
+      quantity: map["quantitiy"] ?? 0,
       category: map["category"],
       description: map["description"],
       image: map["image"],
@@ -31,6 +34,7 @@ class ProdutoModel {
       "id": id,
       "title": title,
       "price": price,
+      "quantity": quantity,
       "description": description,
       "category": category,
       "image": image,
