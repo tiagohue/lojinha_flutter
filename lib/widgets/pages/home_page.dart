@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:lojinha_flutter/data/models/produto_model.dart';
 import 'package:lojinha_flutter/data/providers/produto_provider.dart';
 import 'package:lojinha_flutter/widgets/pages/create_page.dart';
 import 'package:lojinha_flutter/widgets/pages/details_page.dart';
 import 'package:lojinha_flutter/widgets/pages/edit_page.dart';
+import 'package:lojinha_flutter/widgets/standad_container.dart';
 import 'package:provider/provider.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:outlined_text/outlined_text.dart';
@@ -49,11 +50,14 @@ class _HomePageState extends State<HomePage> {
                       );
                     },
                     child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadiusGeometry.circular(20),
+                      ),
                       child: Stack(
                         children: [
                           Positioned.fill(
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(21),
                               child: Image.network(
                                 produto.image,
                                 fit: BoxFit.cover,
@@ -68,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(7.0),
                             child: OutlinedText(
                               text: Text(
                                 produto.title,
@@ -83,34 +87,90 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: OutlinedText(
-                                text: Text(
-                                  NumberFormat.currency(
-                                    locale: 'pt_BR',
-                                    symbol: 'R\$',
-                                  ).format(produto.price),
+                            alignment: Alignment.bottomCenter,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                StandardContainer(
+                                  child: IconButton(
+                                    onPressed: () async {
+                                      if (produto.quantity <= 0) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              "Um produto não pode ter quantidade menor que 0!",
+                                            ),
+                                          ),
+                                        );
 
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                                strokes: [
-                                  OutlinedTextStroke(
-                                    color: Colors.black,
-                                    width: 2,
+                                        return;
+                                      }
+
+                                      final produtoNovo = ProdutoModel(
+                                        title: produto.title,
+                                        price: produto.price,
+                                        quantity: produto.quantity - 1,
+                                        category: produto.category,
+                                        description: produto.description,
+                                        image: produto.image,
+                                        id: produto.id,
+                                      );
+
+                                      await provider.atualizarProduto(
+                                        produtoNovo,
+                                      );
+                                      await provider.carregarProdutos();
+                                    },
+                                    icon: Icon(Icons.remove),
                                   ),
-                                ],
-                              ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: OutlinedText(
+                                    text: Text(
+                                      produto.quantity.toString(),
+
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleLarge,
+                                    ),
+                                    strokes: [
+                                      OutlinedTextStroke(
+                                        color: Colors.black,
+                                        width: 2,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                StandardContainer(
+                                  child: IconButton(
+                                    onPressed: () async {
+                                      final produtoNovo = ProdutoModel(
+                                        title: produto.title,
+                                        price: produto.price,
+                                        quantity: produto.quantity + 1,
+                                        category: produto.category,
+                                        description: produto.description,
+                                        image: produto.image,
+                                        id: produto.id,
+                                      );
+
+                                      await provider.atualizarProduto(
+                                        produtoNovo,
+                                      );
+                                      await provider.carregarProdutos();
+                                    },
+                                    icon: Icon(Icons.add),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Align(
                             alignment: Alignment.topRight,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: const Color.fromARGB(255, 97, 179, 247),
-                              ),
+                            child: StandardContainer(
                               child: PopupMenuButton(
                                 itemBuilder: (_) => [
                                   PopupMenuItem(
@@ -171,6 +231,7 @@ class _HomePageState extends State<HomePage> {
               ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromARGB(255, 97, 179, 247),
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(builder: (BuildContext context) => CreatePage()),
