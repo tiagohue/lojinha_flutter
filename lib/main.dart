@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
           textTheme: TextTheme(
             titleLarge: TextStyle(
-              color: Colors.white,
+              color: const Color.fromARGB(255, 97, 179, 247),
               fontWeight: FontWeight.bold,
             ),
           ),
