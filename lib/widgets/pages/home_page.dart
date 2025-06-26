@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:lojinha_flutter/data/providers/produto_provider.dart';
 import 'package:lojinha_flutter/widgets/pages/create_page.dart';
 import 'package:lojinha_flutter/widgets/pages/details_page.dart';
+import 'package:lojinha_flutter/widgets/pages/edit_page.dart';
 import 'package:provider/provider.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:outlined_text/outlined_text.dart';
@@ -45,7 +46,7 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) => DetailsPage()),
-                      ).then((_) => provider.carregarProdutos());
+                      );
                     },
                     child: Card(
                       child: Stack(
@@ -110,34 +111,55 @@ class _HomePageState extends State<HomePage> {
                                 shape: BoxShape.circle,
                                 color: const Color.fromARGB(255, 97, 179, 247),
                               ),
-                              child: IconButton(
-                                color: Colors.black,
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (_) => AlertDialog(
-                                      title: Text("Tem certeza?"),
-                                      content: Text(
-                                        "Tem certeza que quer deletar o produto \"${produto.title}\"",
+                              child: PopupMenuButton(
+                                itemBuilder: (_) => [
+                                  PopupMenuItem(
+                                    value: "editar",
+                                    child: Text("Editar"),
+                                  ),
+                                  PopupMenuItem(
+                                    value: "deletar",
+                                    child: Text("Deletar"),
+                                  ),
+                                ],
+                                onSelected: (value) {
+                                  if (value == "editar") {
+                                    provider.produtoSelec = produto;
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => EditPage(),
                                       ),
-                                      actions: [
-                                        ElevatedButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
-                                          child: Text("Não"),
+                                    ).then((_) => provider.carregarProdutos());
+                                  } else if (value == "deletar") {
+                                    showDialog(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                        title: Text("Tem certeza?"),
+                                        content: Text(
+                                          "Tem certeza que quer deletar o produto \"${produto.title}\"",
                                         ),
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            provider.deletarProduto(produto.id);
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text("Sim"),
-                                        ),
-                                      ],
-                                    ),
-                                  );
+                                        actions: [
+                                          ElevatedButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            child: Text("Não"),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              provider.deletarProduto(
+                                                produto.id,
+                                              );
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text("Sim"),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
                                 },
-                                icon: Icon(Icons.close),
                               ),
                             ),
                           ),
