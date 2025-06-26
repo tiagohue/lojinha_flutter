@@ -2,7 +2,7 @@ class ProdutoModel {
   String? id;
   final String title;
   final double price;
-  final int quantity;
+  int quantity;
   final String category;
   final String description;
   final String image;
@@ -22,7 +22,7 @@ class ProdutoModel {
       id: map["id"],
       title: map["title"],
       price: map["price"] * 1.0,
-      quantity: map["quantitiy"] ?? 0,
+      quantity: map["quantity"] ?? 0,
       category: map["category"],
       description: map["description"],
       image: map["image"],
