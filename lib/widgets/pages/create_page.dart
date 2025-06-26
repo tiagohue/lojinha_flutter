@@ -62,7 +62,7 @@ class _CreatePageState extends State<CreatePage> {
               onPressed: () {
                 final title = titleController.text.trim();
                 final price = double.tryParse(priceController.text) ?? 0.0;
-                final quantity = int.tryParse(quantityController.text) ?? 0;
+                final quantityText = quantityController.text.trim();
                 final category = categoryController.text.trim();
                 final description = descriptionController.text.trim();
                 final image = imageController.text.trim();
@@ -78,19 +78,25 @@ class _CreatePageState extends State<CreatePage> {
                   return;
                 }
 
-                if (quantity < 0) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("A quantidade não pode ser negativa!"),
-                    ),
-                  );
-                  return;
+                int? quantity;
+                if (quantityText.isNotEmpty) {
+                  quantity = int.tryParse(quantityController.text);
+
+                  if (quantity == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Preecha a quantidade corretamente!"),
+                      ),
+                    );
+
+                    return;
+                  }
                 }
 
                 final produto = ProdutoModel(
                   title: title,
                   price: price,
-                  quantity: quantity,
+                  quantity: quantity ?? 0,
                   category: category,
                   description: description,
                   image: image,
